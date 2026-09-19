@@ -1,0 +1,14 @@
+services:
+  redpanda-console:
+    image: docker.redpanda.com/redpandadata/console:v3.11.0
+    container_name: redpanda-console
+
+    ports:
+      - "8080:8080"
+
+    volumes:
+      - ./config.yml:/tmp/config.yml:ro
+
+    environment:
+      CONFIG_FILEPATH: /tmp/config.yml
+

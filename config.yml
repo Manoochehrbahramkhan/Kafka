@@ -1,0 +1,18 @@
+kafka:
+  brokers:
+    - "192.168.10.250:9094"
+
+  sasl:
+    enabled: true
+    mechanism: PLAIN
+    username: "admin"
+    password: "admin-secret"
+
+  tls:
+    enabled: false
+
+  startup:
+    establishConnectionEagerly: true
+
+server:
+  listenPort: 8080

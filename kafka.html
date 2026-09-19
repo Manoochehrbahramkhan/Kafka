@@ -1,0 +1,781 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>راهنمای عملیاتی کافکا</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0d1117;
+    --bg-elevated: #131a24;
+    --bg-inset: #0a0f16;
+    --border: #23303f;
+    --border-soft: #1a2431;
+    --text: #dbe4ee;
+    --text-dim: #8b9bb0;
+    --text-faint: #5c6b80;
+    --accent: #e0a63f;
+    --accent-soft: #3a3018;
+    --accent-text: #f4c56a;
+    --danger: #e0664a;
+    --danger-soft: #3a1e18;
+    --safe: #58b088;
+    --safe-soft: #16302a;
+    --info: #5b9dd9;
+    --code-bg: #0a0f16;
+    --shadow: rgba(0,0,0,0.35);
+    --font-body: 'Vazirmatn', 'Segoe UI', sans-serif;
+    --font-mono: 'JetBrains Mono', ui-monospace, monospace;
+  }
+  :root:not([data-theme="light"]) { color-scheme: dark; }
+  @media (prefers-color-scheme: light) {
+    :root:not([data-theme="dark"]) {
+      --bg: #f7f5f0;
+      --bg-elevated: #ffffff;
+      --bg-inset: #eeebe3;
+      --border: #ddd7c8;
+      --border-soft: #e7e2d5;
+      --text: #22201a;
+      --text-dim: #5c584c;
+      --text-faint: #8b8778;
+      --accent: #b3791f;
+      --accent-soft: #f2e2c2;
+      --accent-text: #8a5c14;
+      --danger: #b8442c;
+      --danger-soft: #f5ddd5;
+      --safe: #2f7a58;
+      --safe-soft: #dcefe4;
+      --info: #2f6ea3;
+      --code-bg: #fbfaf6;
+      --shadow: rgba(80,70,40,0.12);
+    }
+  }
+  :root[data-theme="light"] {
+    --bg: #f7f5f0;
+    --bg-elevated: #ffffff;
+    --bg-inset: #eeebe3;
+    --border: #ddd7c8;
+    --border-soft: #e7e2d5;
+    --text: #22201a;
+    --text-dim: #5c584c;
+    --text-faint: #8b8778;
+    --accent: #b3791f;
+    --accent-soft: #f2e2c2;
+    --accent-text: #8a5c14;
+    --danger: #b8442c;
+    --danger-soft: #f5ddd5;
+    --safe: #2f7a58;
+    --safe-soft: #dcefe4;
+    --info: #2f6ea3;
+    --code-bg: #fbfaf6;
+    --shadow: rgba(80,70,40,0.12);
+  }
+
+  * { box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+  body {
+    margin: 0;
+    background: var(--bg);
+    color: var(--text);
+    font-family: var(--font-body);
+    line-height: 1.75;
+    font-size: 16px;
+  }
+
+  .shell {
+    display: grid;
+    grid-template-columns: 280px minmax(0, 1fr);
+    max-width: 1400px;
+    margin: 0 auto;
+  }
+
+  /* ---------- Sidebar ---------- */
+  .sidebar {
+    position: sticky;
+    top: 0;
+    height: 100vh;
+    overflow-y: auto;
+    padding: 28px 20px;
+    border-left: 1px solid var(--border-soft);
+    background: var(--bg-elevated);
+  }
+  .brand {
+    display: flex;
+    align-items: baseline;
+    gap: 8px;
+    margin-bottom: 4px;
+  }
+  .brand-mark {
+    font-family: var(--font-mono);
+    font-weight: 700;
+    color: var(--accent);
+    font-size: 20px;
+  }
+  .brand-title {
+    font-weight: 700;
+    font-size: 15px;
+    color: var(--text);
+  }
+  .brand-sub {
+    color: var(--text-faint);
+    font-size: 12.5px;
+    margin: 2px 0 22px;
+    font-family: var(--font-mono);
+    letter-spacing: 0.2px;
+  }
+  nav.toc { display: flex; flex-direction: column; gap: 2px; }
+  nav.toc .group-label {
+    color: var(--text-faint);
+    font-size: 11.5px;
+    margin: 16px 0 6px;
+    font-family: var(--font-mono);
+  }
+  nav.toc a {
+    color: var(--text-dim);
+    text-decoration: none;
+    font-size: 13.5px;
+    padding: 6px 10px;
+    border-radius: 6px;
+    transition: background 0.15s, color 0.15s;
+    border-right: 2px solid transparent;
+  }
+  nav.toc a:hover { color: var(--text); background: var(--bg-inset); }
+
+  .theme-toggle {
+    margin-top: 24px;
+    display: flex;
+    gap: 6px;
+    padding: 4px;
+    background: var(--bg-inset);
+    border: 1px solid var(--border-soft);
+    border-radius: 8px;
+  }
+  .theme-toggle button {
+    flex: 1;
+    padding: 6px 0;
+    background: transparent;
+    border: none;
+    color: var(--text-dim);
+    font-family: var(--font-body);
+    font-size: 12px;
+    border-radius: 6px;
+    cursor: pointer;
+  }
+  .theme-toggle button.active { background: var(--accent-soft); color: var(--accent-text); }
+
+  /* ---------- Main ---------- */
+  main { padding: 48px 56px 120px; min-width: 0; }
+
+  .doc-header { margin-bottom: 56px; border-bottom: 1px solid var(--border-soft); padding-bottom: 32px; }
+  .doc-kicker { font-family: var(--font-mono); color: var(--accent); font-size: 13px; margin-bottom: 14px; }
+  h1.doc-title {
+    font-size: 40px;
+    font-weight: 800;
+    margin: 0 0 14px;
+    line-height: 1.25;
+    letter-spacing: -0.5px;
+  }
+  .doc-desc { color: var(--text-dim); font-size: 16.5px; max-width: 62ch; margin: 0 0 20px; }
+  .meta-row { display: flex; gap: 18px; flex-wrap: wrap; font-size: 13px; color: var(--text-faint); font-family: var(--font-mono); }
+  .meta-row span { display: flex; align-items: center; gap: 6px; }
+
+  section { margin-bottom: 64px; scroll-margin-top: 24px; }
+  section > h2 {
+    font-size: 25px;
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin: 0 0 8px;
+  }
+  section > h2 .idx {
+    font-family: var(--font-mono);
+    color: var(--accent);
+    font-size: 15px;
+    font-weight: 600;
+  }
+  section > .lead { color: var(--text-dim); margin: 0 0 28px; max-width: 68ch; font-size: 15px; }
+  h3 { font-size: 18px; font-weight: 700; margin: 34px 0 12px; }
+  h4 { font-size: 15px; font-weight: 700; margin: 22px 0 8px; color: var(--text); }
+  p { max-width: 72ch; }
+  ul, ol { max-width: 72ch; padding-inline-start: 22px; }
+  li { margin-bottom: 6px; }
+  strong { color: var(--text); font-weight: 700; }
+
+  /* code */
+  pre {
+    background: var(--code-bg);
+    border: 1px solid var(--border-soft);
+    border-radius: 10px;
+    padding: 16px 18px;
+    overflow-x: auto;
+    direction: ltr;
+    text-align: left;
+    font-family: var(--font-mono);
+    font-size: 13px;
+    line-height: 1.65;
+    margin: 14px 0;
+  }
+  code {
+    font-family: var(--font-mono);
+    background: var(--bg-inset);
+    padding: 1px 6px;
+    border-radius: 4px;
+    font-size: 0.88em;
+    direction: ltr;
+    display: inline-block;
+  }
+  pre code { background: none; padding: 0; display: block; }
+  .cmt { color: var(--text-faint); }
+
+  /* tables */
+  .table-wrap { overflow-x: auto; margin: 16px 0; border: 1px solid var(--border-soft); border-radius: 10px; }
+  table { border-collapse: collapse; width: 100%; font-size: 13.5px; min-width: 480px; }
+  th, td { padding: 10px 14px; text-align: right; border-bottom: 1px solid var(--border-soft); }
+  th { background: var(--bg-inset); color: var(--text-dim); font-weight: 600; font-size: 12.5px; font-family: var(--font-mono); }
+  tr:last-child td { border-bottom: none; }
+  td code { white-space: nowrap; }
+
+  /* callouts */
+  .callout {
+    border-radius: 10px;
+    padding: 14px 18px;
+    margin: 18px 0;
+    font-size: 14px;
+    border: 1px solid var(--border-soft);
+    max-width: 72ch;
+  }
+  .callout.warn { background: var(--danger-soft); border-color: color-mix(in srgb, var(--danger) 35%, var(--border-soft)); }
+  .callout.warn .callout-label { color: var(--danger); }
+  .callout.safe { background: var(--safe-soft); border-color: color-mix(in srgb, var(--safe) 35%, var(--border-soft)); }
+  .callout.safe .callout-label { color: var(--safe); }
+  .callout.info { background: var(--accent-soft); border-color: color-mix(in srgb, var(--accent) 35%, var(--border-soft)); }
+  .callout.info .callout-label { color: var(--accent-text); }
+  .callout-label { font-weight: 700; font-family: var(--font-mono); font-size: 12px; display: block; margin-bottom: 6px; }
+
+  /* decision grid */
+  .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin: 16px 0; max-width: 72ch; }
+  @media (max-width: 720px) { .grid-2 { grid-template-columns: 1fr; } }
+  .card {
+    background: var(--bg-elevated);
+    border: 1px solid var(--border-soft);
+    border-radius: 10px;
+    padding: 16px 18px;
+  }
+  .card h4 { margin-top: 0; font-family: var(--font-mono); font-size: 13px; color: var(--accent-text); }
+  .card p { font-size: 13.5px; color: var(--text-dim); margin: 0; }
+
+  .flow { font-family: var(--font-mono); background: var(--code-bg); border: 1px solid var(--border-soft); border-radius: 10px; padding: 18px; direction: ltr; text-align: left; font-size: 13px; overflow-x: auto; color: var(--text-dim); }
+
+  .badge {
+    display: inline-block;
+    font-family: var(--font-mono);
+    font-size: 11px;
+    padding: 2px 8px;
+    border-radius: 100px;
+    border: 1px solid var(--border);
+    color: var(--text-dim);
+    margin-inline-end: 6px;
+  }
+  .badge.danger { color: var(--danger); border-color: color-mix(in srgb, var(--danger) 40%, var(--border)); }
+  .badge.safe { color: var(--safe); border-color: color-mix(in srgb, var(--safe) 40%, var(--border)); }
+
+  hr.divider { border: none; border-top: 1px dashed var(--border-soft); margin: 40px 0; }
+
+  footer { color: var(--text-faint); font-size: 12.5px; font-family: var(--font-mono); border-top: 1px solid var(--border-soft); padding-top: 20px; margin-top: 60px; }
+
+  @media (max-width: 920px) {
+    .shell { grid-template-columns: 1fr; }
+    .sidebar { position: relative; height: auto; border-left: none; border-bottom: 1px solid var(--border-soft); }
+    main { padding: 32px 20px 80px; }
+  }
+</style>
+</head>
+<body>
+<div class="shell">
+
+  <aside class="sidebar">
+    <div class="brand">
+      <span class="brand-mark">λ</span>
+      <span class="brand-title">راهنمای عملیاتی کافکا</span>
+    </div>
+    <div class="brand-sub">from-zero → production offset control</div>
+
+    <nav class="toc">
+      <a href="#setup">۱. راه‌اندازی با Docker</a>
+      <a href="#concepts">۲. مفاهیم پایه</a>
+      <a href="#producer">۳. Producer عمیق</a>
+      <a href="#consumer">۴. Consumer Group و Offset</a>
+      <a href="#offsets-internal">۵. معماری داخلی آفست</a>
+      <a href="#reset-ops">۶. کنترل و برگرداندن Offset</a>
+      <a href="#unique-ops">۷. عملیات‌های منحصربه‌فرد</a>
+      <a href="#cleanup">۸. Cleanup Policy</a>
+      <a href="#broker-data">۹. Broker و ساختار دیتا</a>
+      <a href="#security">۱۰. امن‌سازی</a>
+      <a href="#daily">۱۱. رخدادهای روزمره</a>
+      <a href="#cheatsheet">۱۲. مرجع سریع کامندها</a>
+    </nav>
+
+    <div class="theme-toggle" role="group" aria-label="حالت نمایش">
+      <button type="button" data-theme-btn="light">روشن</button>
+      <button type="button" data-theme-btn="dark">تیره</button>
+      <button type="button" data-theme-btn="system" class="active">سیستم</button>
+    </div>
+  </aside>
+
+  <main>
+    <header class="doc-header">
+      <div class="doc-kicker">// KAFKA OPERATIONS PLAYBOOK</div>
+      <h1 class="doc-title">از راه‌اندازی صفر تا کنترل دقیق Offset در Production</h1>
+      <p class="doc-desc">
+        این سند خلاصه‌ی کامل مسیری‌ست که طی کردیم: از بالا آوردن یک کلاستر Kafka با Docker،
+        تا فهم عمیق Producer/Consumer، معماری داخلی مدیریت Offset، امن‌سازی با SASL/ACL،
+        و چک‌لیست رخدادهای واقعی روزمره برای یک تیم که روی زیرساخت پیام‌رسانی مالی کار می‌کند.
+      </p>
+      <div class="meta-row">
+        <span>🐳 Docker + KRaft</span>
+        <span>🔐 SASL/PLAIN → SASL_SSL</span>
+        <span>☕ Java Client</span>
+        <span>🏦 Financial-grade concerns</span>
+      </div>
+    </header>
+
+    <!-- 1 -->
+    <section id="setup">
+      <h2><span class="idx">01</span> راه‌اندازی با Docker</h2>
+      <p class="lead">یک کلاستر تک‌نودی با حالت KRaft (بدون نیاز به Zookeeper) — کافی برای یادگیری و تست کامل عملیاتی.</p>
+
+      <pre><code><span class="cmt"># docker-compose.yml</span>
+services:
+  kafka:
+    image: apache/kafka:3.7.0
+    container_name: kafka
+    ports:
+      - "9092:9092"
+      - "9093:9093"
+    environment:
+      KAFKA_NODE_ID: 1
+      KAFKA_PROCESS_ROLES: broker,controller
+      KAFKA_LISTENERS: PLAINTEXT://:9092,CONTROLLER://:9093
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://localhost:9092
+      KAFKA_CONTROLLER_LISTENER_NAMES: CONTROLLER
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: CONTROLLER:PLAINTEXT,PLAINTEXT:PLAINTEXT
+      KAFKA_CONTROLLER_QUORUM_VOTERS: 1@kafka:9093
+      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
+      KAFKA_TRANSACTION_STATE_LOG_REPLICATION_FACTOR: 1
+      KAFKA_TRANSACTION_STATE_LOG_MIN_ISR: 1
+      CLUSTER_ID: "MkU3OEVBNTcwNTJENDM2Qk"</code></pre>
+
+      <pre><code>docker compose up -d
+docker exec -it kafka /opt/kafka/bin/kafka-topics.sh --bootstrap-server localhost:9092 --list</code></pre>
+
+      <div class="callout info">
+        <span class="callout-label">نکته</span>
+        فلگ <code>-it</code> فقط برای اجرای تعاملی مستقیم در ترمینال است. هرگز داخل اسکریپت،
+        حلقه، یا جایی‌که خروجی pipe/parse می‌شود از آن استفاده نکنید — باعث ورود فریم‌های
+        کنترلی داکر به stdout و داده‌های به‌ظاهر بی‌معنی می‌شود.
+      </div>
+    </section>
+
+    <!-- 2 -->
+    <section id="concepts">
+      <h2><span class="idx">02</span> مفاهیم پایه: Topic, Partition, Replica, ISR</h2>
+      <p class="lead">پایه‌ی تمام تصمیمات بعدی — از طراحی Topic تا عیب‌یابی Under-Replication.</p>
+
+      <h3>Partition</h3>
+      <p>یک Topic فقط یک اسم است؛ داده‌ی واقعی در پارتیشن‌ها (صف‌های مستقل و ترتیب‌دار) ذخیره می‌شود.
+      ترتیب پیام‌ها فقط <strong>درون یک پارتیشن</strong> تضمین می‌شود، نه در کل Topic.</p>
+
+      <h3>Replica</h3>
+      <p>هر پارتیشن می‌تواند چند نسخه روی بروکرهای مختلف داشته باشد: یک <strong>Leader</strong> (تمام خواندن/نوشتن از اینجا)
+      و چند <strong>Follower</strong> که فقط رپلیکیت می‌کنند.</p>
+
+      <h3>ISR — In-Sync Replicas</h3>
+      <p>لیست رپلیکاهایی که کاملاً با Leader سینک هستند. تنظیم <code>acks=all</code> یعنی
+      «تا وقتی همه‌ی اعضای ISR (نه لزوماً همه‌ی Replica) تایید نکنند، موفق حساب نکن».
+      <code>min.insync.replicas</code> کف ایمنی این ISR را تضمین می‌کند.</p>
+
+      <pre><code>Topic: orders  PartitionCount: 3  ReplicationFactor: 3
+  Partition: 0  Leader: 1  Replicas: 1,2,3  Isr: 1,2,3
+  Partition: 1  Leader: 2  Replicas: 2,3,1  Isr: 2,3,1
+  Partition: 2  Leader: 3  Replicas: 3,1,2  Isr: 3,1   <span class="cmt">← بروکر ۲ عقب افتاده!</span></code></pre>
+    </section>
+
+    <!-- 3 -->
+    <section id="producer">
+      <h2><span class="idx">03</span> Producer: مسیر پیام، Partitioner، Idempotence</h2>
+      <p class="lead">هرچیزی که برای تضمین تحویل درست و بدون تکرار پیام لازم است.</p>
+
+      <h3>مسیر یک پیام</h3>
+      <p>Serializer → Partitioner → بافر داخلی (RecordAccumulator) → Sender thread → بروکر.
+      اگر <code>key</code> بدهید، همیشه به یک پارتیشن ثابت می‌رود (تضمین ترتیب برای آن Key)؛
+      بدون Key از Sticky Partitioner استفاده می‌شود.</p>
+
+      <h3>سطوح تضمین تحویل</h3>
+      <div class="table-wrap">
+        <table>
+          <tr><th>سطح</th><th>تنظیم</th><th>پیامد</th></tr>
+          <tr><td>At-most-once</td><td><code>acks=0</code></td><td>سریع، ممکن است پیام گم شود</td></tr>
+          <tr><td>At-least-once</td><td><code>acks=all, retries=MAX</code></td><td>گم نمی‌شود، ممکن است تکراری شود</td></tr>
+          <tr><td>Exactly-once</td><td><code>enable.idempotence=true</code></td><td>بدون تکرار، بدون گم‌شدن (در سطح Producer)</td></tr>
+        </table>
+      </div>
+
+      <h3>چطور Idempotence واقعاً کار می‌کند</h3>
+      <p>هر Producer یک <strong>PID</strong> و <strong>Epoch</strong> می‌گیرد. هر پیام برای هر پارتیشن یک
+      <strong>Sequence Number</strong> ترتیبی دارد. بروکر آخرین Sequence موفق هر <code>(PID, Partition)</code>
+      را نگه می‌دارد؛ اگر یک batch با Sequence تکراری برسد (نتیجه‌ی retry شبکه‌ای)، بدون نوشتن مجدد،
+      فقط offset قبلی را برمی‌گرداند.</p>
+
+      <div class="callout warn">
+        <span class="callout-label">محدودیت مهم</span>
+        Idempotence فقط جلوی duplicate ناشی از retry در یک Producer session را می‌گیرد؛ نه
+        duplicate ناشی از restart کامل اپلیکیشن یا چند Producer جدا که یک پیام را دوبار می‌فرستند.
+        برای آن سطح تضمین، باید Idempotency Key منطقی در سطح دامنه (business logic) پیاده‌سازی شود.
+      </div>
+
+      <pre><code>props.put("acks", "all");
+props.put("enable.idempotence", "true");
+props.put("retries", Integer.MAX_VALUE);
+props.put("max.in.flight.requests.per.connection", 5);
+props.put("linger.ms", 20);
+props.put("compression.type", "lz4");</code></pre>
+    </section>
+
+    <!-- 4 -->
+    <section id="consumer">
+      <h2><span class="idx">04</span> Consumer Group و Offset</h2>
+      <p class="lead">Offset متعلق به Topic نیست — متعلق به رابطه‌ی بین یک Group و یک Topic/Partition است.</p>
+
+      <div class="flow">Offset = f(Group, Topic, Partition)
+
+Topic: orders (partition 0)
+├── billing-group    → current offset: 5000
+└── analytics-group  → current offset: 3200   (کاملاً مستقل از هم)</code></div>
+
+      <h3>کامیت دستی (اصولی برای production)</h3>
+      <pre><code>props.put("enable.auto.commit", "false");
+...
+Map&lt;TopicPartition, OffsetAndMetadata&gt; toCommit = new HashMap&lt;&gt;();
+toCommit.put(new TopicPartition(record.topic(), record.partition()),
+             new OffsetAndMetadata(record.offset() + 1));
+consumer.commitSync(toCommit);</code></pre>
+
+      <h3>سه سطح بررسی یک Group</h3>
+      <div class="grid-2">
+        <div class="card"><h4>--describe</h4><p>Offset فعلی، Log-End-Offset، Lag، Consumer-ID، Host</p></div>
+        <div class="card"><h4>--describe --state</h4><p>Stable / Empty / PreparingRebalance / Dead</p></div>
+        <div class="card"><h4>--describe --members --verbose</h4><p>هر instance دقیقاً کدام پارتیشن‌ها را دارد</p></div>
+        <div class="card"><h4>seek() در کد</h4><p>seekToBeginning / seekToEnd / seek(tp, offset)</p></div>
+      </div>
+    </section>
+
+    <!-- 5 -->
+    <section id="offsets-internal">
+      <h2><span class="idx">05</span> معماری داخلی: <code>__consumer_offsets</code></h2>
+      <p class="lead">قلب اصلی موضوع — همه‌ی عملیات Reset در واقع فقط نوشتن یک رکورد جدید در این Topic داخلی است.</p>
+
+      <ul>
+        <li>یک Topic داخلی با معمولاً <strong>۵۰ پارتیشن</strong> (<code>offsets.topic.num.partitions</code>)</li>
+        <li><code>cleanup.policy=compact</code> — فقط آخرین مقدار هر Key نگه داشته می‌شود</li>
+        <li>Key: <code>(group_id, topic, partition)</code> — Value: <code>(offset, metadata, commit_timestamp)</code></li>
+        <li>پارتیشن مسئول یک Group: <code>hash(group_id) % offsets.topic.num.partitions</code></li>
+        <li>Leader آن پارتیشن = <strong>Group Coordinator</strong> همان Group</li>
+      </ul>
+
+      <pre><code>docker exec kafka /opt/kafka/bin/kafka-console-consumer.sh \
+  --bootstrap-server &lt;host:port&gt; --consumer.config /tmp/client.properties \
+  --topic __consumer_offsets \
+  --formatter "org.apache.kafka.tools.consumer.OffsetsMessageFormatter" \
+  --from-beginning --max-messages 20</code></pre>
+
+      <div class="callout warn">
+        <span class="callout-label">ریسک Retention</span>
+        اگر یک Group بیش از <code>offsets.retention.minutes</code> (پیش‌فرض ۷ روز) غیرفعال بماند،
+        Offset ذخیره‌شده‌اش کامل پاک می‌شود. رفتار بعدی به <code>auto.offset.reset</code> بستگی دارد.
+      </div>
+    </section>
+
+    <!-- 6 -->
+    <section id="reset-ops">
+      <h2><span class="idx">06</span> کنترل و برگرداندن Offset (Reset / Seek)</h2>
+      <p class="lead">مسیر امن: dry-run → بررسی → execute → تایید نهایی.</p>
+
+      <div class="callout danger warn">
+        <span class="callout-label">پیش‌نیاز اجباری</span>
+        گروه باید در وضعیت <code>Empty</code> باشد (هیچ Consumer فعالی نداشته باشد)، وگرنه
+        خطای <code>Assignments can only be reset if the group is inactive</code> می‌گیرید.
+      </div>
+
+      <pre><code><span class="cmt"># همیشه اول Dry-run</span>
+kafka-consumer-groups.sh --bootstrap-server &lt;host&gt; --command-config client.properties \
+  --group &lt;GROUP&gt; --topic &lt;TOPIC&gt; --reset-offsets --shift-by -100 --dry-run
+
+<span class="cmt"># سپس Execute</span>
+kafka-consumer-groups.sh ... --reset-offsets --shift-by -100 --execute</code></pre>
+
+      <div class="table-wrap">
+        <table>
+          <tr><th>سناریو</th><th>فلگ</th></tr>
+          <tr><td>پردازش مجدد کامل</td><td><code>--to-earliest</code></td></tr>
+          <tr><td>نادیده گرفتن Lag فعلی</td><td><code>--to-latest</code></td></tr>
+          <tr><td>رفتن به Offset مشخص</td><td><code>--to-offset 1500</code></td></tr>
+          <tr><td>عقب/جلو رفتن N پیام</td><td><code>--shift-by -100</code> / <code>100</code></td></tr>
+          <tr><td>بازگشت بر اساس زمان (DR)</td><td><code>--to-datetime 2026-09-13T10:00:00.000</code></td></tr>
+          <tr><td>فقط یک پارتیشن</td><td><code>--topic orders:0</code></td></tr>
+        </table>
+      </div>
+
+      <div class="callout info">
+        <span class="callout-label">نکته حیاتی محاسباتی</span>
+        «۱۰۰ تا برگرد» یعنی ۱۰۰ واحد <strong>در هر پارتیشن جداگانه</strong>، نه مجموع کل Topic.
+        با ۳ پارتیشن، عملاً حدود ۳۰۰ پیام دوباره پردازش می‌شود.
+      </div>
+
+      <div class="callout warn">
+        <span class="callout-label">پیش از هر Reset روی سیستم مالی بپرس</span>
+        اگر این پیام‌ها دوباره پردازش شوند، منطق Consumer Idempotent هست؟ اگر نه، پردازش مجدد
+        می‌تواند یعنی دوبار واریز/تسویه.
+      </div>
+    </section>
+
+    <!-- 7 -->
+    <section id="unique-ops">
+      <h2><span class="idx">07</span> عملیات‌های منحصربه‌فرد Kafka</h2>
+      <p class="lead">فراتر از Offset Reset — کارهایی که فقط در این معماری معنا دارند.</p>
+
+      <div class="table-wrap">
+        <table>
+          <tr><th>عملیات</th><th>ابزار</th><th>برگشت‌پذیر؟</th></tr>
+          <tr><td>Offset Reset</td><td><code>kafka-consumer-groups.sh --reset-offsets</code></td><td><span class="badge safe">بله</span></td></tr>
+          <tr><td>Delete Records (پاک‌کردن دائمی پیام قدیمی)</td><td><code>kafka-delete-records.sh</code></td><td><span class="badge danger">خیر</span></td></tr>
+          <tr><td>Partition Reassignment</td><td><code>kafka-reassign-partitions.sh</code></td><td><span class="badge safe">بله</span></td></tr>
+          <tr><td>Preferred Leader Election</td><td><code>kafka-leader-election.sh --election-type PREFERRED</code></td><td><span class="badge safe">بله</span></td></tr>
+          <tr><td>Unclean Leader Election</td><td><code>--election-type UNCLEAN</code></td><td><span class="badge danger">خیر — ریسک از دست‌رفتن داده</span></td></tr>
+          <tr><td>Topic Config زنده (بدون ری‌استارت)</td><td><code>kafka-configs.sh --alter</code></td><td><span class="badge safe">بله</span></td></tr>
+          <tr><td>Abort کردن Transaction معلق</td><td><code>kafka-transactions.sh abort</code></td><td><span class="badge danger">نیمه</span></td></tr>
+        </table>
+      </div>
+
+      <pre><code><span class="cmt"># Delete Records — واقعاً از دیسک پاک می‌کند</span>
+{"partitions":[{"topic":"orders","partition":0,"offset":5000}],"version":1}
+kafka-delete-records.sh --bootstrap-server &lt;host&gt; --offset-json-file spec.json
+
+<span class="cmt"># مشاهده‌ی Transaction های معلق (Hanging)</span>
+kafka-transactions.sh --bootstrap-server &lt;host&gt; --command-config client.properties \
+  list --duration-filter 60000</code></pre>
+    </section>
+
+    <!-- 8 -->
+    <section id="cleanup">
+      <h2><span class="idx">08</span> Cleanup Policy: delete در برابر compact</h2>
+      <p class="lead">سه مقدار ممکن: <code>delete</code>، <code>compact</code>، یا هر دو با هم.</p>
+
+      <div class="flow">delete (بر اساس زمان/حجم، واحد Segment):
+[msg1][msg2][msg3][msg4][msg5]
+   └─ کل segment قدیمی یکجا حذف می‌شود، نه پیام‌به‌پیام
+
+compact (بر اساس Key):
+key=A:v1  key=B:v1  key=A:v2  key=B:v2  key=A:v3
+                ↓ بعد از Compaction:
+                       key=B:v2   key=A:v3</code></div>
+
+      <div class="grid-2">
+        <div class="card"><h4>delete</h4><p>مناسب event log و تراکنش‌های تاریخچه‌دار مثل <code>fund-transfer</code>. کنترل با <code>retention.ms</code> / <code>retention.bytes</code>.</p></div>
+        <div class="card"><h4>compact</h4><p>مناسب changelog وضعیت مثل <code>__consumer_offsets</code>. کنترل با <code>min.cleanable.dirty.ratio</code> و Tombstone (<code>value=null</code>).</p></div>
+      </div>
+
+      <div class="callout warn">
+        <span class="callout-label">هشدار Migration</span>
+        تغییر <code>cleanup.policy</code> از delete به compact روی Topic پرشده، تاریخچه‌ی چند-نسخه‌ای
+        هر Key را به‌مرور از بین می‌برد. هرگز روی Topic تراکنشی که تاریخچه‌اش مهم است این کار را نکنید.
+      </div>
+    </section>
+
+    <!-- 9 -->
+    <section id="broker-data">
+      <h2><span class="idx">09</span> Broker و ساختار فیزیکی دیتا</h2>
+      <p class="lead">از Metadata کلاستر تا بایت‌های خام روی دیسک.</p>
+
+      <pre><code><span class="cmt"># شناسایی Broker ها</span>
+kafka-broker-api-versions.sh --bootstrap-server &lt;host&gt; --command-config client.properties
+
+<span class="cmt"># وضعیت KRaft Controller/Quorum</span>
+kafka-metadata-quorum.sh --bootstrap-server &lt;host&gt; --command-config client.properties describe --status
+
+<span class="cmt"># تمام تنظیمات مؤثر یک Broker (شامل پیش‌فرض‌ها)</span>
+kafka-configs.sh --entity-type brokers --entity-name 1 --describe --all</code></pre>
+
+      <div class="flow">/var/lib/kafka/data/
+├── orders-0/
+│   ├── 00000000000000000000.log        ← داده اصلی (Segment)
+│   ├── 00000000000000000000.index      ← ایندکس offset → byte position
+│   ├── 00000000000000000000.timeindex  ← ایندکس زمان → offset
+│   └── leader-epoch-checkpoint
+├── __consumer_offsets-0..49/
+└── meta.properties                     ← cluster.id, node.id</code></div>
+
+      <pre><code><span class="cmt"># دیدن محتوای خام یک Segment (شامل producerId, sequence, headers)</span>
+kafka-dump-log.sh --files orders-0/00000000000000000000.log --print-data-log --deep-iteration
+
+<span class="cmt"># حجم واقعی هر Topic روی دیسک</span>
+du -sh /var/lib/kafka/data/*/ | sort -rh | head -20</code></pre>
+    </section>
+
+    <!-- 10 -->
+    <section id="security">
+      <h2><span class="idx">۱۰</span> امن‌سازی: Authentication، ACL، Encryption</h2>
+      <p class="lead">سه لایه‌ی مستقل — نبود هرکدام یعنی یک شکاف امنیتی واقعی، نه فرضی.</p>
+
+      <div class="callout danger warn">
+        <span class="callout-label">وضعیت رایج مشاهده‌شده</span>
+        <code>SASL_PLAINTEXT + PLAIN</code> یعنی احراز هویت هست ولی رمزنگاری نیست — پسورد به‌صورت
+        base64 ساده روی شبکه رد و بدل می‌شود و با Sniffing قابل خواندن است. برای production باید
+        به <code>SASL_SSL</code> مهاجرت شود.
+      </div>
+
+      <div class="table-wrap">
+        <table>
+          <tr><th>مکانیزم</th><th>امنیت</th><th>کاربرد</th></tr>
+          <tr><td>PLAIN</td><td>ضعیف بدون TLS</td><td>تست/داخلی</td></tr>
+          <tr><td>SCRAM-SHA-256/512</td><td>متوسط تا خوب</td><td>production بدون Kerberos</td></tr>
+          <tr><td>GSSAPI (Kerberos)</td><td>بالا</td><td>سازمانی با AD</td></tr>
+          <tr><td>OAUTHBEARER</td><td>بالا، مدرن</td><td>میکروسرویس/Cloud</td></tr>
+          <tr><td>mTLS</td><td>بالا</td><td>PKI داخلی</td></tr>
+        </table>
+      </div>
+
+      <h3>Authorization (ACL) — لایه‌ای که اغلب فراموش می‌شود</h3>
+      <p>خطای <code>SecurityDisabledException: No Authorizer is configured</code> یعنی هیچ ACL ای
+      وجود ندارد — هر یوزر Authenticate‌شده، دسترسی کامل به همه‌چیز دارد.</p>
+
+      <pre><code><span class="cmt"># فعال‌سازی (server.properties هر بروکر)</span>
+authorizer.class.name=org.apache.kafka.metadata.authorizer.StandardAuthorizer
+super.users=User:admin
+allow.everyone.if.no.acl.found=true   <span class="cmt"># برای Migration تدریجی، سپس false</span>
+
+<span class="cmt"># تعریف دسترسی Produce</span>
+kafka-acls.sh --add --allow-principal User:payment-service \
+  --operation Write --operation Describe --topic fund-transfer
+
+<span class="cmt"># تعریف دسترسی Consume (نیازمند اجازه روی Topic و Group)</span>
+kafka-acls.sh --add --allow-principal User:reporting-service \
+  --operation Read --topic fund-transfer --group reporting-group</code></pre>
+
+      <h3>مسیر پیشنهادی Migration بدون قطعی</h3>
+      <ol>
+        <li>شناسایی همه‌ی Client های متصل به هر Topic (Consumer Groups + JMX/netstat برای Producer)</li>
+        <li>اطمینان از یوزر مجزا برای هر سرویس (نه یک یوزر مشترک)</li>
+        <li>فعال‌سازی Authorizer با <code>allow.everyone.if.no.acl.found=true</code></li>
+        <li>تعریف تدریجی ACL دقیق برای هر سرویس شناسایی‌شده</li>
+        <li>سوییچ نهایی به <code>false</code> و Rolling Restart</li>
+      </ol>
+    </section>
+
+    <!-- 11 -->
+    <section id="daily">
+      <h2><span class="idx">۱۱</span> رخدادهای روزمره: Admin در برابر Developer</h2>
+      <p class="lead">چک‌لیستی واقع‌گرایانه برای هر دو نقش، در dev و production.</p>
+
+      <div class="grid-2">
+        <div class="card">
+          <h4>ADMIN / DEVOPS</h4>
+          <p>Under-Replicated Partitions، Rebalance Storm، دیسک پر، Broker Down،
+          Unclean Leader Election، Quota برای Client پرمصرف، انقضای گواهی TLS.</p>
+        </div>
+        <div class="card">
+          <h4>DEVELOPER</h4>
+          <p>Poison Pill message، Deserialization Exception، OffsetOutOfRange،
+          Duplicate processing (نبود Idempotency)، Schema Breaking Change.</p>
+        </div>
+      </div>
+
+      <div class="table-wrap">
+        <table>
+          <tr><th>رخداد</th><th>فوریت</th><th>مسئول</th></tr>
+          <tr><td>Broker Down</td><td><span class="badge danger">بحرانی</span></td><td>Admin</td></tr>
+          <tr><td>دیسک نزدیک پر شدن</td><td><span class="badge danger">بحرانی</span></td><td>Admin</td></tr>
+          <tr><td>Consumer Lag ناگهانی</td><td>بالا</td><td>Dev + Admin</td></tr>
+          <tr><td>ACL/Auth Error</td><td>بالا</td><td>Admin</td></tr>
+          <tr><td>Duplicate Processing</td><td>بالا (روی سیستم مالی)</td><td>Developer</td></tr>
+          <tr><td>Poison Pill</td><td>متوسط</td><td>Developer</td></tr>
+          <tr><td>Rebalance Storm</td><td>متوسط</td><td>Developer (config)</td></tr>
+          <tr><td>Schema Breaking Change</td><td>متوسط (پیشگیرانه)</td><td>Developer</td></tr>
+        </table>
+      </div>
+    </section>
+
+    <!-- 12 -->
+    <section id="cheatsheet">
+      <h2><span class="idx">۱۲</span> مرجع سریع کامندها</h2>
+      <p class="lead">همه‌ی این کامندها با پیشوند <code>docker exec kafka /opt/kafka/bin/&lt;script&gt;</code> و فلگ کانفیگ درست اجرا می‌شوند.</p>
+
+      <div class="table-wrap">
+        <table>
+          <tr><th>اسکریپت</th><th>فلگ کانفیگ صحیح</th></tr>
+          <tr><td><code>kafka-topics.sh</code></td><td><code>--command-config</code></td></tr>
+          <tr><td><code>kafka-consumer-groups.sh</code></td><td><code>--command-config</code></td></tr>
+          <tr><td><code>kafka-console-consumer.sh</code></td><td><code>--consumer.config</code></td></tr>
+          <tr><td><code>kafka-console-producer.sh</code></td><td><code>--producer.config</code></td></tr>
+          <tr><td><code>kafka-configs.sh</code> / <code>kafka-acls.sh</code></td><td><code>--command-config</code></td></tr>
+        </table>
+      </div>
+
+      <pre><code><span class="cmt"># لیست Topic / توضیح کامل</span>
+kafka-topics.sh --list
+kafka-topics.sh --describe --topic &lt;name&gt;
+
+<span class="cmt"># لیست Group / Lag / وضعیت / اعضا</span>
+kafka-consumer-groups.sh --list
+kafka-consumer-groups.sh --describe --group &lt;name&gt;
+kafka-consumer-groups.sh --describe --group &lt;name&gt; --state
+kafka-consumer-groups.sh --describe --group &lt;name&gt; --members --verbose
+
+<span class="cmt"># Reset Offset (همیشه با --dry-run شروع کن)</span>
+kafka-consumer-groups.sh --group &lt;g&gt; --topic &lt;t&gt; --reset-offsets --to-earliest --dry-run
+
+<span class="cmt"># محتوای __consumer_offsets</span>
+kafka-console-consumer.sh --topic __consumer_offsets \
+  --formatter org.apache.kafka.tools.consumer.OffsetsMessageFormatter --from-beginning
+
+<span class="cmt"># Offset ابتدا/انتهای هر پارتیشن</span>
+kafka-run-class.sh kafka.tools.GetOffsetShell --topic &lt;t&gt; --time -1
+
+<span class="cmt"># ACL</span>
+kafka-acls.sh --list
+kafka-acls.sh --add --allow-principal User:&lt;u&gt; --operation Write --topic &lt;t&gt;</code></pre>
+    </section>
+
+    <footer>
+      تدوین‌شده در طول یک نشست عملیاتی — Kafka 3.7 · KRaft mode · SASL/PLAIN → SASL_SSL migration path
+    </footer>
+  </main>
+</div>
+
+<script>
+(function() {
+  var root = document.documentElement;
+  var buttons = document.querySelectorAll('[data-theme-btn]');
+  function applyTheme(mode) {
+    try {
+      if (mode === 'system') { root.removeAttribute('data-theme'); }
+      else { root.setAttribute('data-theme', mode); }
+      localStorage.setItem('kafka-doc-theme', mode);
+    } catch (e) {}
+    buttons.forEach(function(b) {
+      b.classList.toggle('active', b.getAttribute('data-theme-btn') === mode);
+    });
+  }
+  buttons.forEach(function(b) {
+    b.addEventListener('click', function() { applyTheme(b.getAttribute('data-theme-btn')); });
+  });
+  var saved = 'system';
+  try { saved = localStorage.getItem('kafka-doc-theme') || 'system'; } catch (e) {}
+  applyTheme(saved);
+})();
+</script>
+</body>
+</html>
